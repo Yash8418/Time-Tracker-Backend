@@ -19,8 +19,12 @@ async def getUser(username: str, password: str):
     if result is None:
         return {"Message": "User NOT found"}
 
+    # Check if password matches
+    stored_password = result.get("password")
+    if stored_password != password:
+        return {"Message": "Invalid password"}
+
     return {
         "Message": "User FOUND successfully",
         "role": result.get("role", "User")  # Return role
     }
-
