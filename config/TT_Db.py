@@ -7,3 +7,5 @@ client=AsyncIOMotorClient(MONGO_URL)
 
 timetracker_db=client[TIMETRACKER_DATABASE_NAME]
 timetracker_user_collection=timetracker_db["users"]
+timetracker_projet_collection=timetracker_db["projects"]
+timetracker_projet_team_collection=timetracker_db["project_team"]

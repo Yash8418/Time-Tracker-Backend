@@ -2,6 +2,8 @@
 from fastapi import FastAPI
 from routes.UserRoutes import router as user_router
 from routes.TT_UserRoutes import router as tt_user_router
+from routes.TT_ProjectRoutes import router as tt_project_router
+from routes.TT_PtojectTeamRoutes import router as tt_project_team_router
 from fastapi.middleware.cors import CORSMiddleware
 
 # Object of FastAPI
@@ -17,3 +19,5 @@ app.add_middleware(
 
 app.include_router(user_router)
 app.include_router(tt_user_router)
+app.include_router(tt_project_router)
+app.include_router(tt_project_team_router)
