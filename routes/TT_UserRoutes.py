@@ -18,3 +18,4 @@ async def login_user(user: UserLogin):
 #     if user.username in users_db and users_db[user.username]["password"] == user.password:
 #         return {"username": user.username, "role": users_db[user.username]["role"]}
 #     raise HTTPException(status_code=401, detail="Invalid credentials")
+

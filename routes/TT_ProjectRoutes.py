@@ -11,3 +11,4 @@ async def add_project(project:Project):
 @router.get("/getAllProjects")
 async def get_all_projects():
     return await getAllProjects()
+
