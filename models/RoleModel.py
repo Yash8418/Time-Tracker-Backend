@@ -12,6 +12,7 @@ class User(BaseModel):
     status:bool
     email:str
     password:str
+    # role_id:str
 
     @validator("password",pre=True,always=True)
     def decrypt_password(cls,v):
