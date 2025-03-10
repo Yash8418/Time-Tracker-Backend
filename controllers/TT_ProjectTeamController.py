@@ -1,4 +1,3 @@
-
 from models.TT_ProjectTeam import ProjectTeam,ProjectTeamOut
 from bson import ObjectId
 from config.TT_Db import timetracker_projet_team_collection,timetracker_user_collection,timetracker_projet_collection
@@ -9,31 +8,10 @@ async def addProjectTeam(project_team:ProjectTeam):
     savedProjectTeam=await timetracker_projet_team_collection.insert_one(project_team.dict())
     return JSONResponse(content={"message":"Project Team added successfully"})
 
-# async def getProjectTeam():
-#     projectTeams=await timetracker_projet_team_collection.find().to_list()
-#     for project in projectTeams:
-#         if "_id" in project and isinstance(project["_id"],ObjectId):
-#             project["_id"]=str(project["_id"])
-
-#         projectTeam=await timetracker_projet_team_collection.find_one({"_id":ObjectId(project["_id"])})
-#         if projectTeam:
-#             projectTeam["_id"]=str(projectTeam["_id"])
-#             project["_id"]=projectTeam
-
-#     return [ProjectTeamOut(**project) for project in projectTeam]
 async def getProjectTeam():
     projectTeams = await timetracker_projet_team_collection.find().to_list(length=None)
-
+    print(projectTeams)
     for project in projectTeams:
-        # Convert `_id` from ObjectId to string
-        if "_id" in project and isinstance(project["_id"], ObjectId):
-            project["_id"] = str(project["_id"])
-        
-        # Convert `projectId` and `userId` from ObjectId to string
-        if "projectId" in project and isinstance(project["projectId"], ObjectId):
-            project["projectId"] = str(project["projectId"])
-        if "userId" in project and isinstance(project["userId"], ObjectId):
-            project["userId"] = str(project["userId"])
 
         # Fetch project details
         if "projectId" in project:

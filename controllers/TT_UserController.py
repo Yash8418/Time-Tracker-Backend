@@ -1,5 +1,4 @@
-
-from models.TT_RoleModel import UserSignup,UserLogin
+from models.TT_RoleModel import UserSignup,UserLogin,UserOut
 from config.TT_Db import timetracker_user_collection
 from bson import ObjectId
 
@@ -14,18 +13,24 @@ async def addUser(user:UserSignup):
 #         return {"Message":"User NOT found"}
 #     return {"Message":"User FOUND successfully"}
 
-async def getUser(username: str, password: str):
-    result = await timetracker_user_collection.find_one({"username": username})
-
+async def getUser(request: UserLogin):
+    # username = request.username
+    # password = request.password
+    result = await timetracker_user_collection.find_one({"username": request.username})
+    result["_id"] = str(result["_id"])
+    print("result.....", result)
+    print("result.....id....", result["_id"])
+    print("result.....role....", result.get("role"))
     if result is None:
         return {"Message": "User NOT found"}
 
     # Check if password matches
     stored_password = result.get("password")
-    if stored_password != password:
+    if stored_password != request.password:
         return {"Message": "Invalid password"}
 
     return {
         "Message": "User FOUND successfully",
-        "role": result.get("role", "User")  # Return role
+        "role":(UserOut(**result)) # Return role
+        
     }
