@@ -9,3 +9,4 @@ db=client[DATABASE_NAME]
 
 user_collection=db["users"]
 
+product_collection=db["products"]
