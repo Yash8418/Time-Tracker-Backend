@@ -18,9 +18,9 @@ async def getUser(request: UserLogin):
     # password = request.password
     result = await timetracker_user_collection.find_one({"username": request.username})
     result["_id"] = str(result["_id"])
-    print("result.....", result)
-    print("result.....id....", result["_id"])
-    print("result.....role....", result.get("role"))
+    # print("result.....", result)
+    # print("result.....id....", result["_id"])
+    # print("result.....role....", result.get("role"))
     if result is None:
         return {"Message": "User NOT found"}
 
@@ -34,3 +34,8 @@ async def getUser(request: UserLogin):
         "role":(UserOut(**result)) # Return role
         
     }
+
+async def getAllUser():
+    users = await timetracker_user_collection.find().to_list()
+    # print(users)
+    return [UserOut(**user) for user in users]
