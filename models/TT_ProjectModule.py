@@ -16,7 +16,7 @@ class ProjectModule(BaseModel):
     moduleName:str
     description:str
     estimatedHours:int
-    status:str
+    # status:str
     startDate:datetime
 
 class ProjectModuleOut(ProjectModule):
