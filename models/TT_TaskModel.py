@@ -12,12 +12,12 @@ from typing import Optional,Dict,Any
 from bson import ObjectId
 
 class Task(BaseModel):
-    moduleId:str
+    # moduleId:str
     projectId:str
     title:str
     priority:str
     description:str
-    statusId:str
+    # statusId:str  
     totalMinutes:int
 
 class TaskOut(Task):
