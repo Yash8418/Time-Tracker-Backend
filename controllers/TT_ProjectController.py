@@ -11,4 +11,23 @@ async def addProject(project:Project):
 
 async def getAllProjects():
     projects=await timetracker_projet_collection.find().to_list()
+    print(projects)
     return [ProjectOut(**project) for project in projects]
+
+# async def getAllProjectsByUserId(userId:str):
+#     projects=await timetracker_projet_collection.find({"_id":userId}).to_list()
+#     return [ProjectOut(**project) for project in projects]
+from bson import ObjectId
+from motor.motor_asyncio import AsyncIOMotorCollection
+
+async def getAllProjectsByUserId(userId: str):
+    try:
+        # Ensure userId is stored as a string, not as ObjectId
+        projects = await timetracker_projet_collection.find({"userId": userId}).to_list(None)
+
+        # Convert MongoDB results into Pydantic models
+        return [ProjectOut(**project) for project in projects]
+
+    except Exception as e:
+        print(f"Error fetching projects: {e}")
+        return []

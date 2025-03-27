@@ -35,3 +35,4 @@ class ProjectModuleOut(ProjectModule):
         if isinstance(v,Dict) and "_id" in v:
             v["_id"] = str(v["_id"])
         return v
+    

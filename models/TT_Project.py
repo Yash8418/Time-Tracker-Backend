@@ -19,12 +19,20 @@ class Project(BaseModel):
     estimatedHours:int
     startDate:datetime
     completionDate:datetime
+    userId:str
 
 class ProjectOut(Project):
     id:str=Field(alias="_id")
-
+    # user_id: Optional[Dict[str,Any]] = None
     @validator('id', pre=True, always=True)
     def convert_obectId(cls,v):
         if isinstance(v,ObjectId):
             return str(v)
         return v
+    
+    # @validator('user_id', pre=True, always=True)
+    # def convert_user_id(cls,v):
+    #     if isinstance(v,Dict) and "_id" in v:
+    #         v["_id"] = str(v["_id"])
+    #     return v
+    

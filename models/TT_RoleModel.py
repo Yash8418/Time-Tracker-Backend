@@ -5,7 +5,7 @@ from bson import ObjectId
 class UserSignup(BaseModel):
     username:str
     password:str
-    # email:str
+    email:str
     role:str
     
 class UserOut(UserSignup):
@@ -22,7 +22,7 @@ class UserOut(UserSignup):
         
 
 class UserLogin(BaseModel):
-    username:str
-    password:str
+    username_or_email: str  # Accept either username or email
+    password: str
 
     

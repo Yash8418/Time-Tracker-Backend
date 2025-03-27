@@ -11,7 +11,7 @@
 from models.TT_ProjectModule import ProjectModule,ProjectModuleOut
 from bson import ObjectId
 from config.TT_Db import timetracker_projet_module_collection,timetracker_projet_collection
-from fastapi import APIRouter,HTTPException
+from fastapi import APIRouter,HTTPException,Query
 from fastapi.responses import JSONResponse
 
 
@@ -20,11 +20,17 @@ async def addProjectModule(project_module:ProjectModule):
     return JSONResponse(content={"message":"Project Module added successfully"})
 
 async def getProjectModule():
-    projectModules = await timetracker_projet_module_collection.find().to_list(length=None)
-    print(projectModules)
-    for project in projectModules:
+    projectModules=await timetracker_projet_module_collection.find().to_list(length=None)
+    return [ProjectModuleOut(**project) for project in projectModules]
 
-        # Fetch project details
+async def getProjectModuleByProjectId(projectId: str = Query(None)):
+    filter_query = {}
+    if projectId:
+        filter_query["projectId"] = projectId  # Filter by selected project ID
+
+    projectModules = await timetracker_projet_module_collection.find(filter_query).to_list(length=None)
+    
+    for project in projectModules:
         if "projectId" in project:
             project_data = await timetracker_projet_collection.find_one({"_id": ObjectId(project["projectId"])})
             if project_data:

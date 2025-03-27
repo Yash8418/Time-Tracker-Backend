@@ -14,15 +14,15 @@ async def addUser(user:UserSignup):
 #     return {"Message":"User FOUND successfully"}
 
 async def getUser(request: UserLogin):
-    # username = request.username
-    # password = request.password
-    result = await timetracker_user_collection.find_one({"username": request.username})
-    result["_id"] = str(result["_id"])
-    # print("result.....", result)
-    # print("result.....id....", result["_id"])
-    # print("result.....role....", result.get("role"))
+    # Try to find user by username or email
+    result = await timetracker_user_collection.find_one({
+        "$or": [{"username": request.username_or_email}, {"email": request.username_or_email}]
+    })
+    
     if result is None:
         return {"Message": "User NOT found"}
+
+    result["_id"] = str(result["_id"])  # Convert ObjectId to string
 
     # Check if password matches
     stored_password = result.get("password")
@@ -31,9 +31,9 @@ async def getUser(request: UserLogin):
 
     return {
         "Message": "User FOUND successfully",
-        "role":(UserOut(**result)) # Return role
-        
+        "role": UserOut(**result)  # Return user role
     }
+
 
 async def getAllUser():
     users = await timetracker_user_collection.find().to_list()
