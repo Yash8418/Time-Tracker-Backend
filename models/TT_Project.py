@@ -1,5 +1,5 @@
 from pydantic import BaseModel,validator,Field
-from typing import Optional,Dict,Any
+from typing import Optional,Dict,List,Any
 from bson import ObjectId
 from datetime import datetime
 
@@ -20,12 +20,14 @@ class Project(BaseModel):
     startDate:datetime
     completionDate:datetime
     userId:str
+    # assignedDevelopers: List[str] 
+    assignedDevelopers: str
 
 class ProjectOut(Project):
     id:str=Field(alias="_id")
     # user_id: Optional[Dict[str,Any]] = None
     @validator('id', pre=True, always=True)
-    def convert_obectId(cls,v):
+    def convert_objectId(cls,v):
         if isinstance(v,ObjectId):
             return str(v)
         return v

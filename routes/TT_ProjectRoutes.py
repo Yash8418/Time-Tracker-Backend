@@ -1,11 +1,13 @@
 from fastapi import APIRouter
 from models.TT_Project import Project,ProjectOut
-from controllers.TT_ProjectController import addProject,getAllProjects, getAllProjectsByUserId
+from controllers.TT_ProjectController import addProject,getAllProjects, getAllProjectsByUserId, getAllProjectsByDeveloperId
 
 router = APIRouter()
-@router.post("/addProject/")
+@router.post("/addProject")
 async def add_project(project:Project):
     return await addProject(project)
+
+
 
 @router.get("/getAllProjects/")
 async def get_all_projects():
@@ -14,4 +16,8 @@ async def get_all_projects():
 @router.get("/getAllProjectsByUserId/{userId}")
 async def get_all_projects_by_user_id(userId:str):
     return await getAllProjectsByUserId(userId)
+
+@router.get("/getAllProjectsByDeveloperId/{developerId}")
+async def get_all_projects_by_developer_id(developerId:str):
+    return await getAllProjectsByUserId(developerId)
 
