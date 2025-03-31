@@ -21,6 +21,16 @@ async def addProjectModule(project_module:ProjectModule):
 
 async def getProjectModule():
     projectModules=await timetracker_projet_module_collection.find().to_list(length=None)
+    for project in projectModules:
+        if "projectId" in project:
+            project_data = await timetracker_projet_collection.find_one({"_id": ObjectId(project["projectId"])})
+            if project_data:
+                project_data["_id"] = str(project_data["_id"])
+                project["project_id"] = project_data
+            else:
+                project["project_id"] = None
+        else:
+            project["project_id"] = None
     return [ProjectModuleOut(**project) for project in projectModules]
 
 async def getProjectModuleByProjectId(projectId: str = Query(None)):

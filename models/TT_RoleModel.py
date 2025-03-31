@@ -22,7 +22,7 @@ class UserOut(UserSignup):
         
 
 class UserLogin(BaseModel):
-    username_or_email: str  # Accept either username or email
-    password: str
+    username_or_email:str
+    password:str
 
     
