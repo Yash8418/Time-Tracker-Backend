@@ -21,18 +21,17 @@ class Project(BaseModel):
     completionDate:datetime
     assignedDevelopers:List[str]
     userId:str
-
-    
 class ProjectOut(Project):
-    id:str=Field(alias="_id")
+    projectId:str=Field(alias="_id")
     user_id:Optional[Dict[str,Any]]=None
     dev_id:Optional[List[Dict[str,Any]]]=None
 
-    @validator('id', pre=True, always=True)
+    @validator('projectId', pre=True, always=True)
     def convert_obectId(cls,v):
         if isinstance(v,ObjectId):
             return str(v)
         return v
+    
     @validator("dev_id", pre=True, always=True)
     def convert_assignedDevelopers(cls, v):
         if isinstance(v, list):  # Ensure it is a list of developer objects
@@ -40,6 +39,7 @@ class ProjectOut(Project):
                 if isinstance(dev, Dict) and "_id" in dev:
                     dev["_id"] = str(dev["_id"])  # Convert ObjectId to string
         return v
+    
     @validator("user_id",pre=True,always=True)
     def convert_userId(cls,v):
         if isinstance(v,Dict) and "_id" in v:

@@ -10,6 +10,7 @@
 from pydantic import BaseModel,validator,Field
 from typing import Optional,Dict,Any,List
 from bson import ObjectId
+from datetime import datetime
 
 class Task(BaseModel):
     moduleId:str
@@ -20,6 +21,9 @@ class Task(BaseModel):
     statusId:str
     totalMinutes:int
     assignedDevelopers:List[str]
+    startTime: Optional[datetime] = None  # Start Time
+    timeSpent: Optional[int] = 0  # Total Time Spent (minutes)
+    
 
 class TaskOut(Task):
     id:str=Field(alias="_id")

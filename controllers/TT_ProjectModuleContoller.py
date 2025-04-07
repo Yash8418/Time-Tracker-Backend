@@ -19,30 +19,6 @@ async def addProjectModule(project_module:ProjectModule):
     savedProjectModule=await timetracker_projet_module_collection.insert_one(project_module.dict())
     return JSONResponse(content={"message":"Project Module added successfully"})
 
-# async def getProjectModule():
-#     projectModules=await timetracker_projet_module_collection.find().to_list(length=None)
-#     for project in projectModules:
-#         if "projectId" in project:
-#             project_data = await timetracker_projet_collection.find_one({"_id": ObjectId(project["projectId"])})
-#             if project_data:
-#                 project_data["_id"] = str(project_data["_id"])
-#                 project["project_id"] = project_data
-#             else:
-#                 project["project_id"] = None
-#         else:
-#             project["project_id"] = None
-#         if "assignedDevelopers" in project and isinstance(project["assignedDevelopers"], list):
-#                 developer_list = []
-#                 for dev_id in project["assignedDevelopers"]:
-#                     dev_data = await timetracker_user_collection.find_one({"_id": ObjectId(dev_id)})
-#                     if dev_data:
-#                         dev_data["_id"] = str(dev_data["_id"])
-#                         developer_list.append(dev_data)
-#                 project["dev_id"] = developer_list
-
-        
-#     return [ProjectModuleOut(**project) for project in projectModules]
-
 async def getProjectModule():
     projectModules = await timetracker_projet_module_collection.find().to_list(length=None)
 
