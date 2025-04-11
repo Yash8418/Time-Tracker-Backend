@@ -1,4 +1,4 @@
-from models.TT_TaskModel import Task,TaskOut
+from models.TT_TaskModel import Task,TaskOut,TaskUpdate
 from bson import ObjectId
 from config.TT_Db import timetracker_task_collection,timetracker_projet_module_collection,timetracker_projet_collection,timetracker_status_collection, timetracker_user_collection
 from fastapi import APIRouter,HTTPException
@@ -258,3 +258,9 @@ async def completeTask(taskId: str):
         {"$set": {"statusId": str(completed_status["_id"])}}
     )
     return JSONResponse(content={"message": "Task completed successfully"})
+
+async def updateTask(taskId:str,task:TaskUpdate):
+    result=await timetracker_task_collection.update_one({"_id":ObjectId(taskId)},{"$set":task.dict(exclude_unset=True)})
+    if result.modified_count==0:
+        return JSONResponse(content={"message":"Task not found"},status_code=404)
+    return JSONResponse(content={"message":"Task updated successfully"})

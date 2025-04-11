@@ -63,3 +63,17 @@ class TaskOut(Task):
                 if isinstance(dev, Dict) and "_id" in dev:
                     dev["_id"] = str(dev["_id"])  # Convert ObjectId to string
         return v
+    
+
+class TaskUpdate(BaseModel):
+    moduleId:Optional[str]=None
+    projectId:Optional[str]=None
+    title:Optional[str]=None
+    priority:Optional[str]=None
+    description:Optional[str]=None
+    statusId:Optional[str]=None
+    totalMinutes:Optional[int]=None
+    assignedDevelopers:Optional[List[str]]=None
+    startTime: Optional[datetime] = None  # Start Time
+    timeSpent: Optional[int] = 0  # Total Time Spent (minutes)
+    

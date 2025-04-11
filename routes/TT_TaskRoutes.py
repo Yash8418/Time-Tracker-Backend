@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from models.TT_TaskModel import Task,TaskOut
-from controllers.TT_TaskController import addTask,getTask, getAllTasksByDeveloperId, startTask, stopTask, completeTask
+from models.TT_TaskModel import Task,TaskOut, TaskUpdate
+from controllers.TT_TaskController import addTask,getTask, getAllTasksByDeveloperId, startTask, stopTask, completeTask, updateTask
 
 router=APIRouter()
 @router.post("/addTask")
@@ -23,3 +23,7 @@ async def stop_task(taskId: str):
 @router.put("/completeTask/{taskId}")
 async def complete_task(taskId: str):
     return await completeTask(taskId)
+
+@router.patch("/updateTask/{taskId}")
+async def update_task(taskId: str, task: TaskUpdate):
+    return await updateTask(taskId, task)

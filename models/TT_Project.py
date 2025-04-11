@@ -46,3 +46,12 @@ class ProjectOut(Project):
             v["_id"]=str(v["_id"])
         return v
     
+class ProjectPartialUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    technology: Optional[str] = None
+    estimatedHours: Optional[int] = None
+    startDate: Optional[datetime] = None
+    completionDate: Optional[datetime] = None
+    assignedDevelopers: Optional[List[str]] = None
+    userId: Optional[str] = None

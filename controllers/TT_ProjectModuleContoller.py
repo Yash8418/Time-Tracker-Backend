@@ -8,7 +8,7 @@
 
 
 
-from models.TT_ProjectModule import ProjectModule,ProjectModuleOut
+from models.TT_ProjectModule import ProjectModule,ProjectModuleOut,ProjectModulePartialUpdate
 from bson import ObjectId
 from config.TT_Db import timetracker_projet_module_collection,timetracker_projet_collection,timetracker_user_collection
 from fastapi import APIRouter,HTTPException,Query
@@ -60,3 +60,15 @@ async def getProjectModuleByProjectId(projectId: str = Query(None)):
                 project["project_id"] = None
 
     return [ProjectModuleOut(**project) for project in projectModules]
+
+async def partiallyUpadateModule(projecModuletId: str, projectModule: ProjectModulePartialUpdate):
+    if not ObjectId.is_valid(projecModuletId):
+        raise HTTPException(status_code=400, detail="Invalid module ID format")
+    
+    result = await timetracker_projet_module_collection.update_one(
+        {"_id": ObjectId(projecModuletId)},
+        {"$set": projectModule.dict(exclude_unset=True)}
+    )
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Project Module not found")
+    return JSONResponse(content={"message": "Project Module updated successfully"})

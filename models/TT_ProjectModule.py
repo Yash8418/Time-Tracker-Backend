@@ -1,5 +1,5 @@
 from pydantic import BaseModel,validator,Field
-from typing import Optional,Dict,List,Any
+from typing import Optional,Dict,Any,List
 from bson import ObjectId
 from datetime import datetime
 
@@ -23,7 +23,8 @@ class ProjectModule(BaseModel):
 class ProjectModuleOut(ProjectModule):
     id:str=Field(alias="_id")
     project_id: Optional[Dict[str,Any]] = None
-    dev_id: Optional[List[Dict[str, Any]]] = None
+    dev_id:Optional[List[Dict[str,Any]]]=None
+    
 
     @validator('id', pre=True, always=True)
     def convert_objectId(cls,v):
@@ -45,3 +46,12 @@ class ProjectModuleOut(ProjectModule):
                     dev["_id"] = str(dev["_id"])  # Convert ObjectId to string
         return v
     
+
+class ProjectModulePartialUpdate(BaseModel):
+    projectId:Optional[str]=None
+    moduleName:Optional[str]=None
+    description:Optional[str]=None
+    estimatedHours:Optional[int]=None
+    # status:str
+    startDate:Optional[datetime]=None
+    assignedDevelopers:Optional[List[str]]=None
