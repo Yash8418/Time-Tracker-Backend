@@ -1,3 +1,4 @@
+
 from fastapi import HTTPException
 from datetime import datetime
 from collections import defaultdict
@@ -158,3 +159,56 @@ async def generate_task_time_excel_report():
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": "attachment; filename=task_time_report.xlsx"}
     )
+
+
+# Total Time Spent Per Project
+async def get_time_spent_per_project_controller(developer_id):
+    pipeline = [
+        {"$match": {"assignedDevelopers": developer_id}},
+        {"$group": {
+            "_id": "$projectId",
+            "totalTimeSpent": {"$sum": "$timeSpent"}
+        }}
+    ]
+    data = await timetracker_task_collection.aggregate(pipeline).to_list(length=None)
+    result = []
+    for d in data:
+        project = await timetracker_projet_collection.find_one({"_id": ObjectId(d["_id"])});
+        result.append({
+            "project": project.get("title", "Unknown") if project else "Unknown",
+            "timeSpent": d["totalTimeSpent"]
+        })
+    return result
+
+# Completed vs Pending Tasks
+async def get_task_completion_status_controller(developer_id):
+    match_stage = {"$match": {"assignedDevelopers": developer_id}}
+    group_stage = {"$group": {"_id": "$statusId", "count": {"$sum": 1}}}
+    pipeline = [match_stage, group_stage]
+    data = await timetracker_task_collection.aggregate(pipeline).to_list(length=None)
+
+    result = {"completed": 0, "pending": 0}
+    for d in data:
+        status = await timetracker_status_collection.find_one({"_id": ObjectId(d["_id"])});
+        if status:
+            name = status.get("statusName", "unknown").lower()
+            if name == "completed":
+                result["completed"] += d["count"]
+            elif name == "pending":
+                result["pending"] += d["count"]
+    return result
+
+# Average Time Per Task
+async def get_avg_time_per_task_controller(developer_id):
+    match_stage = {"$match": {"assignedDevelopers": developer_id}}
+    group_stage = {
+        "$group": {
+            "_id": None,
+            "avgTime": {"$avg": "$timeSpent"}
+        }
+    }
+    pipeline = [match_stage, group_stage]
+    data = await timetracker_task_collection.aggregate(pipeline).to_list(length=None)
+    if data:
+        return {"averageTime": round(data[0]["avgTime"], 2)}
+    return {"averageTime": 0}
