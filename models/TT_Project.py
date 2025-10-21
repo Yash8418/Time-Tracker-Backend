@@ -21,6 +21,7 @@ class Project(BaseModel):
     completionDate:datetime
     assignedDevelopers:List[str]
     userId:str
+    modules: Optional[List[str]] = []
 class ProjectOut(Project):
     projectId:str=Field(alias="_id")
     user_id:Optional[Dict[str,Any]]=None

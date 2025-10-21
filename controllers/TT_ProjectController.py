@@ -24,6 +24,9 @@ async def getAllProjects():
                 project["user_id"] = None
 
         if "assignedDevelopers" in project and isinstance(project["assignedDevelopers"], list):
+            # Convert ObjectIds to strings
+            project["assignedDevelopers"] = [str(dev_id) for dev_id in project["assignedDevelopers"]]
+
             developer_list = []
             for dev_id in project["assignedDevelopers"]:
                 dev_data = await timetracker_user_collection.find_one({"_id": ObjectId(dev_id)})
@@ -32,7 +35,6 @@ async def getAllProjects():
                     developer_list.append(dev_data)
             project["dev_id"] = developer_list
 
-
     return [ProjectOut(**project) for project in projects]
 
 async def getAllProjectsByUserId(userId: str):
@@ -40,7 +42,7 @@ async def getAllProjectsByUserId(userId: str):
         projects = await timetracker_projet_collection.find({
             "$or": [
                 {"userId": userId},  # 🔹 Projects created by this user
-                {"assignedDevelopers": {"$elemMatch": {"id": userId}}}  # 🔹 Projects assigned to this user
+                {"assignedDevelopers": userId}  # 🔹 Projects assigned to this user
             ]
         }).to_list(None)
         # print("befor for loop...",projects)
@@ -101,11 +103,37 @@ async def getAllProjectsByDeveloperId(developerId: str):
         return []
     
 
+# async def partialUpdateProject(projectId: str, updateData: ProjectPartialUpdate):
+#     update_fields = updateData.dict(exclude_unset=True)
+#     print("update_fields",update_fields)
+#     if not update_fields:
+#         raise HTTPException(status_code=400, detail="No fields provided to update")
+
+#     result = await timetracker_projet_collection.update_one(
+#         {"_id": ObjectId(projectId)},
+#         {"$set": update_fields}
+#     )
+
+#     if result.matched_count == 0:
+#         raise HTTPException(status_code=404, detail="Project not found")
+
+#     return JSONResponse(content={"message": "Project updated successfully"}, status_code=200)
+
 async def partialUpdateProject(projectId: str, updateData: ProjectPartialUpdate):
     update_fields = updateData.dict(exclude_unset=True)
-    print("update_fields",update_fields)
+    print("update_fields", update_fields)
+
     if not update_fields:
         raise HTTPException(status_code=400, detail="No fields provided to update")
+
+    # 🔥 Fix for assignedDevelopers field
+    if "assignedDevelopers" in update_fields:
+        # Ensure the assignedDevelopers field is an array of strings (not ObjectId)
+        update_fields["assignedDevelopers"] = [str(dev_id) for dev_id in update_fields["assignedDevelopers"]]  # Convert to string
+
+        # If the developers are removed and the list is empty, make sure it's still an empty array in MongoDB
+        if not update_fields["assignedDevelopers"]:
+            update_fields["assignedDevelopers"] = []
 
     result = await timetracker_projet_collection.update_one(
         {"_id": ObjectId(projectId)},
